@@ -1,0 +1,65 @@
+import requests
+
+def get_weather_data(city):
+    api_url = f"https://samples.openweathermap.org/data/2.5/forecast/hourly?q={city}&appid=b6907d289e10d714a6e88b30761fae22"
+    response = requests.get(api_url)
+    return response.json()
+
+def get_temperature(data, date):
+    for forecast in data['list']:
+        if date in forecast['dt_txt']:
+            return forecast['main']['temp']
+    return None
+
+def get_wind_speed(data, date):
+    for forecast in data['list']:
+        if date in forecast['dt_txt']:
+            return forecast['wind']['speed']
+    return None
+
+def get_pressure(data, date):
+    for forecast in data['list']:
+        if date in forecast['dt_txt']:
+            return forecast['main']['pressure']
+    return None
+
+def main():
+    city = 'London,us'
+    data = get_weather_data(city)
+    while True:
+        print("Options:")
+        print("1. Get weather")
+        print("2. Get Wind Speed")
+        print("3. Get Pressure")
+        print("0. Exit")
+
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+            date = input("Enter the date (YYYY-MM-DD HH:mm:ss format): ")
+            temperature = get_temperature(data, date)
+            if temperature:
+                print(f"Temperature on {date}: {temperature} Kelvin")
+            else:
+                print("Data not available for the given date.")
+        elif choice == 2:
+            date = input("Enter the date (YYYY-MM-DD HH:mm:ss format): ")
+            wind_speed = get_wind_speed(data, date)
+            if wind_speed:
+                print(f"Wind Speed on {date}: {wind_speed} m/s")
+            else:
+                print("Data not available for the given date.")
+        elif choice == 3:
+            date = input("Enter the date (YYYY-MM-DD HH:mm:ss format): ")
+            pressure = get_pressure(data, date)
+            if pressure:
+                print(f"Pressure on {date}: {pressure} hPa")
+            else:
+                print("Data not available for the given date.")
+        elif choice == 0:
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if _name_ == "_main_":
+    main()
